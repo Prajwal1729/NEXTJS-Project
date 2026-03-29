@@ -2,11 +2,27 @@
 
 import Sidebar from "../sidebar/Sidebar";
 import { Mic, Sparkles, Plus, LucideArrowBigUp } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function DashboardPage() {
   const [isOpen,isSetOpen] = useState(true);
   const [message,setmessage] = useState("");
+  const [openDropdown,setopenDropdown] = useState(false);
+  const [selectModel,setselectModel] = useState("Orbix AI");
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      const handleClickOutside = (e: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+          setopenDropdown(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
   return (
     <div className="h-screen flex bg-[#0b0f17] text-white overflow-hidden">
 
@@ -18,8 +34,43 @@ export default function DashboardPage() {
         {/* NAVBAR */}
         <div className="h-14 flex items-center justify-between px-6 border-b border-white/10 backdrop-blur-md">
           <div className="text-sm font-medium text-gray-300 flex items-center gap-1 cursor-pointer hover:text-white transition">
-            Orbix AI
-            <span className="text-xs">▾</span>
+  
+            <div ref={dropdownRef} className="relative">
+              {/* BUTTON */}
+              <div
+                onClick={() => setopenDropdown(!openDropdown)}
+                className="text-sm font-medium text-gray-300 cursor-pointer hover:text-white transition"
+              >
+                {selectModel}
+              </div>
+
+              {/* DROPDOWN */}
+              {openDropdown && (
+                <div className="absolute top-full left-0 mt-2 w-44 bg-[#111827] border border-white/10 rounded-lg shadow-lg z-50 overflow-hidden">
+
+                  <div
+                    onClick={() => {
+                      setselectModel("Orbix AI Plus");
+                      setopenDropdown(false);
+                    }}
+                    className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm"
+                  >
+                    Orbix AI Plus
+                  </div>
+
+                  <div
+                    onClick={() => {
+                      setselectModel("Orbix AI");
+                      setopenDropdown(false);
+                    }}
+                    className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm"
+                  >
+                    Orbix AI
+                  </div>
+
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-4 text-gray-400">
