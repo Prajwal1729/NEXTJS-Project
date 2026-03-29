@@ -3,19 +3,25 @@
 import Sidebar from "../sidebar/Sidebar";
 import { Mic, Sparkles, Plus, LucideArrowBigUp } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
 export default function DashboardPage() {
   const [isOpen,isSetOpen] = useState(true);
   const [message,setmessage] = useState("");
   const [openDropdown,setopenDropdown] = useState(false);
+  const [openProfileDropdown,setopenProfileDropdown] = useState(false);
   const [selectModel,setselectModel] = useState("Orbix AI");
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null); // for model selection dropdown
+  const profileDropdownRef = useRef<HTMLDivElement>(null); // for profile dropdown
 
     useEffect(() => {
       const handleClickOutside = (e: MouseEvent) => {
         if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
           setopenDropdown(false);
+        }
+        if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target as Node)) {
+          setopenProfileDropdown(false);
         }
       };
 
@@ -75,7 +81,21 @@ export default function DashboardPage() {
 
           <div className="flex items-center gap-4 text-gray-400">
             {/* <div className="hover:text-white cursor-pointer transition">⚙️</div> */}
-            <div className="w-8 h-8 rounded-full bg-gray-700"></div>
+            <div ref={profileDropdownRef} className="w-8 h-8 rounded-full bg-gray-700" onClick={(e)=>{
+              e.stopPropagation();
+              setopenProfileDropdown(!openProfileDropdown);
+            }}>
+              <Image src="/profile.jpg" alt="Profile" width={32} height={32} className="rounded-full"/>
+              {openProfileDropdown && (
+                <div className="absolute top-full right-0 mt-2 w-48 bg-[#111827] border border-white/10 rounded-lg shadow-lg z-50 overflow-hidden">
+                  <ul>
+                    <li className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">Profile</li>
+                    <li className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">Settings</li>
+                    <li className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">Logout</li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
