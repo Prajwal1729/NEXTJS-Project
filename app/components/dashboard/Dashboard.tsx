@@ -3,6 +3,7 @@
 import Sidebar from "../sidebar/Sidebar";
 import { Mic, Sparkles, Plus, LucideArrowBigUp } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 export default function DashboardPage() {
@@ -11,6 +12,7 @@ export default function DashboardPage() {
   const [openDropdown,setopenDropdown] = useState(false);
   const [openProfileDropdown,setopenProfileDropdown] = useState(false);
   const [selectModel,setselectModel] = useState("Orbix AI");
+  const router = useRouter();
 
   const dropdownRef = useRef<HTMLDivElement>(null); // for model selection dropdown
   const profileDropdownRef = useRef<HTMLDivElement>(null); // for profile dropdown
@@ -91,7 +93,7 @@ export default function DashboardPage() {
                   <ul>
                     <li className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">Profile</li>
                     <li className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">Settings</li>
-                    <li className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">Logout</li>
+                    <li className="px-3 py-2 hover:bg-white/10 cursor-pointer text-sm" onClick={()=> router.push("/login")}>Logout</li>
                   </ul>
                 </div>
               )}
