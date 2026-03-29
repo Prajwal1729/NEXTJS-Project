@@ -92,17 +92,16 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
             <p className="text-gray-400 text-sm mb-2">Your chats</p>
             <div className="text-gray-600 text-sm">No chats yet</div>
           </div>
-        </>
-      )}
+     
+        <div className="mt-auto p-3 border-t border-white/10">
+          <div className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg cursor-pointer transition">
+            <div className="w-8 h-8 rounded-full bg-blue-500"></div>
 
-      {/* FOOTER */}
-      <div className="mt-auto p-3 border-t border-white/10">
-        <div className="flex items-center gap-3 hover:bg-white/10 p-2 rounded-lg cursor-pointer transition">
-          <div className="w-8 h-8 rounded-full bg-blue-500"></div>
-
-          {isOpen && <span className="text-sm">Profile</span>}
+            <span className="text-sm">Profile</span>
+          </div>
         </div>
-      </div>
+       </>
+        )}
 
     </div>
   );
