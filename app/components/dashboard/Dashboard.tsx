@@ -1,7 +1,7 @@
 "use client";
 
 import Sidebar from "../sidebar/Sidebar";
-import { Mic, Sparkles, Plus, LucideArrowBigUp } from "lucide-react";
+import { Mic, LucideAudioLines , Plus, LucideArrowBigUp, LucideFileCode, LucideTelescope,LucideImages} from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -11,21 +11,26 @@ export default function DashboardPage() {
   const [message,setmessage] = useState("");
   const [openDropdown,setopenDropdown] = useState(false);
   const [openProfileDropdown,setopenProfileDropdown] = useState(false);
+  const [messageDropdown,setmessageDropdown] = useState(false);
   const [selectModel,setselectModel] = useState("Orbix AI");
   const router = useRouter();
 
   const dropdownRef = useRef<HTMLDivElement>(null); // for model selection dropdown
   const profileDropdownRef = useRef<HTMLDivElement>(null); // for profile dropdown
+  const messageDropdownRef = useRef<HTMLDivElement>(null); // for message options dropdown
 
-    useEffect(() => {
-      const handleClickOutside = (e: MouseEvent) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-          setopenDropdown(false);
-        }
-        if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target as Node)) {
-          setopenProfileDropdown(false);
-        }
-      };
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setopenDropdown(false);
+      }
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(e.target as Node)) {
+        setopenProfileDropdown(false);
+      }
+      if (messageDropdownRef.current && !messageDropdownRef.current.contains(e.target as Node)) {
+        setmessageDropdown(false);
+      }
+    };
 
       document.addEventListener("mousedown", handleClickOutside);
       return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -120,9 +125,34 @@ export default function DashboardPage() {
 
               {/* LEFT */}
               <div className="flex items-center gap-3 w-full">
-                <button className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition">
-                  <Plus size={18} />
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setmessageDropdown(!messageDropdown)}
+                    className="w-9 h-9 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition"
+                  >
+                    <Plus size={18} />
+                  </button>
+
+                  {messageDropdown && (
+                    <div
+                      ref={messageDropdownRef}
+                      className="absolute top-full left-0 mt-4 w-40 bg-[#111827] border border-white/10 rounded-lg shadow-lg z-50 overflow-hidden"
+                    >
+                      <div className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">
+                        <LucideFileCode size={16} />
+                        <span>Code Files</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">
+                        <LucideTelescope size={16} />
+                        <span>Deep research</span>
+                      </div>
+                      <div className="flex item-center gap-2 px-3 py-2 hover:bg-white/10 cursor-pointer text-sm">
+                       <LucideImages size={16} />
+                       <span>Create Image</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <input
                   type="text"
@@ -135,18 +165,18 @@ export default function DashboardPage() {
 
               {/* RIGHT */}
               <div className="flex items-center gap-2">
-                {message.trim() === "" ? (
-                  <>
                 <button className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
                   <Mic size={16} />
                 </button>
-                <button className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
-                  <Sparkles size={16} />
-                </button>
+                 {message.trim() === "" ? (
+                <>
+                  <button className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+                    <LucideAudioLines size={16} />
+                  </button>
                 </>
                 ): (
                   <button onClick={()=>{
-                    console.log(message);
+                    // console.log(message);
                     setmessage("");
                   }}
                   className="w-9 h-9 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center transition"
