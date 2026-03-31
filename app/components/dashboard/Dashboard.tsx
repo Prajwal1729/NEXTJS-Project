@@ -19,6 +19,12 @@ export default function DashboardPage() {
   const profileDropdownRef = useRef<HTMLDivElement>(null); // for profile dropdown
   const messageDropdownRef = useRef<HTMLDivElement>(null); // for message options dropdown
 
+  const [messages, setMessages] = useState<
+  { role: "user" | "assistant"; content: string }[]
+>([]);
+
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -107,12 +113,29 @@ export default function DashboardPage() {
         </div>
 
         {/* CENTER */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4">
+        <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 space-y-4">
+          {messages.length===0 && (
+            <h1 className="text-4xl text-gray-300 text-center mt-20 mb-4">
+              What's on your mind?
+            </h1>
+          )}
 
-          {/* Heading */}
-          <h1 className="text-4xl text-gray-300 mb-10 animate-fadeIn">
-            What's on your mind?
-          </h1>
+           {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`max-w-2xl px-4 py-3 rounded-2xl ${
+                msg.role === "user"
+                  ? "ml-auto bg-blue-600"
+                  : "mr-auto bg-white/10"
+              }`}
+            >
+              {msg.content}
+            </div>
+          ))}
+
+          {loading && (
+            <div className="text-gray-400 text-sm">Thinking...</div>
+          )}
 
           {/* INPUT */}
           <div className="w-full max-w-2xl group">
@@ -175,10 +198,29 @@ export default function DashboardPage() {
                   </button>
                 </>
                 ): (
-                  <button onClick={()=>{
-                    // console.log(message);
-                    setmessage("");
-                  }}
+                  <button 
+                  onClick={async () => {
+                  if (!message.trim()) return;
+
+                  const userMsg: { role: "user" | "assistant"; content: string } = { role: "user", content: message };
+
+                  setMessages((prev) => [...prev, userMsg]);
+                  setmessage("");
+                  setLoading(true);
+
+                  const res = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ message }),
+                  });
+
+                  const data = await res.json();
+                  const botMsg: { role: "user" | "assistant"; content: string } = { role: "assistant", content: data.reply };
+                  setMessages((prev) => [...prev, botMsg]);
+                  setLoading(false);
+                }}
                   className="w-9 h-9 rounded-full bg-blue-500 hover:bg-blue-600 flex items-center justify-center transition"
                   >
                   <LucideArrowBigUp size={18} />
